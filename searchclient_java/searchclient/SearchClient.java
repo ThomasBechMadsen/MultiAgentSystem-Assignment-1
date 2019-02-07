@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import searchclient.State.Box;
+
 public class SearchClient {
     public State initialState;
 
@@ -28,6 +30,7 @@ public class SearchClient {
         this.initialState = new State(null);
         
         boolean agentFound = false;
+        ArrayList<Box> boxes = new ArrayList<Box>();
         
         for(int row = 0; row < input.size(); row++) {
         	for (int col = 0; col < colSize; col++) {
@@ -44,7 +47,7 @@ public class SearchClient {
                     this.initialState.agentRow = row;
                     this.initialState.agentCol = col;
                 } else if ('A' <= chr && chr <= 'Z') { // Box.
-                    this.initialState.boxes[row][col] = chr;
+                	boxes.add(new State.Box(chr, row, col));
                 } else if ('a' <= chr && chr <= 'z') { // Goal.
                     State.map.goals[row][col] = chr;
                 } else if (chr == ' ') {
@@ -55,6 +58,7 @@ public class SearchClient {
                 }
             }
         }
+        this.initialState.boxes = boxes.toArray(new Box[0]);
     }
 
     public ArrayList<State> Search(Strategy strategy) {

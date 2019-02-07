@@ -6,6 +6,11 @@ import java.util.Collections;
 import java.util.Random;
 
 public class State {
+	public class Box{
+		public char c;
+		public int x;
+		public int y;
+	}
     private static final Random RNG = new Random(1);
     
     public static Map map;
@@ -23,7 +28,7 @@ public class State {
     // this.walls[row][col] is true if there's a wall at (row, col)
     //
 
-    public char[][] boxes;
+    public Box[] boxes;
 
     public State parent;
     public Command action;
@@ -50,15 +55,14 @@ public class State {
     }
 
     public boolean isGoalState() {
-        for (int row = 1; row < map.max_row - 1; row++) {
-            for (int col = 1; col < map.max_col - 1; col++) {
-                char g = map.goals[row][col];
-                char b = Character.toLowerCase(boxes[row][col]);
-                if (g > 0 && b != g) {
-                    return false;
-                }
-            }
-        }
+    	for(int i = 0; i < boxes.length; ++i)
+    	{
+    		Box currentBox = boxes[i];
+    		if(map.goals[currentBox.x][currentBox.y] != currentBox.c)
+    		{
+    			return false;
+    		}
+    	}
         return true;
     }
 
@@ -89,8 +93,10 @@ public class State {
                         n.action = c;
                         n.agentRow = newAgentRow;
                         n.agentCol = newAgentCol;
-                        n.boxes[newBoxRow][newBoxCol] = this.boxes[newAgentRow][newAgentCol];
-                        n.boxes[newAgentRow][newAgentCol] = 0;
+                        // Update the specific box instance for new state
+                        Box movedBox = n.getBox(newAgentCol, newAgentRow);
+                        movedBox.x = newBoxCol;
+                        movedBox.y = newBoxRow;
                         expandedStates.add(n);
                     }
                 }
@@ -105,8 +111,10 @@ public class State {
                         n.action = c;
                         n.agentRow = newAgentRow;
                         n.agentCol = newAgentCol;
-                        n.boxes[this.agentRow][this.agentCol] = this.boxes[boxRow][boxCol];
-                        n.boxes[boxRow][boxCol] = 0;
+                        // Update the specific box instance for new state
+                        Box movedBox = n.getBox(this.agentCol, this.agentRow);
+                        movedBox.x = boxCol;
+                        movedBox.y = boxRow;
                         expandedStates.add(n);
                     }
                 }
@@ -117,18 +125,26 @@ public class State {
     }
 
     private boolean cellIsFree(int row, int col) {
-        return !map.walls[row][col] && this.boxes[row][col] == 0;
+        return !map.walls[row][col] && !boxAt(row, col);
     }
-
+    
+    private Box getBox(int row, int col)
+    {
+    	for (int i = 0; i < boxes.length; i++) {
+    		Box currentBox = boxes[i];
+    		if(currentBox.x == col && currentBox.y == row)
+    			return currentBox;
+		}
+    	return null;
+    }
+    
     private boolean boxAt(int row, int col) {
-        return this.boxes[row][col] > 0;
+    	return getBox(row, col) != null;
     }
 
     private State ChildState() {
         State copy = new State(this);
-        for (int row = 0; row < map.max_row; row++) {
-            System.arraycopy(this.boxes[row], 0, copy.boxes[row], 0, map.max_col);
-        }
+        copy.boxes = this.boxes.clone();
         return copy;
     }
 

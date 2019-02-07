@@ -39,6 +39,7 @@ public class State {
         } else {
             this.g = parent.g() + 1;
         }
+        boxes = new char[map.max_row][map.max_col];
     }
 
     public int g() {

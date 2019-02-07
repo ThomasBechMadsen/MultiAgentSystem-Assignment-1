@@ -3,6 +3,7 @@ package searchclient;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchClient {
     public State initialState;
@@ -14,14 +15,23 @@ public class SearchClient {
             System.err.println("Error, client does not support colors.");
             System.exit(1);
         }
+        
+        ArrayList<String> input = new ArrayList<String>();
 
-        int row = 0;
-        boolean agentFound = false;
-        this.initialState = new State(null);
-
+        int colSize = line.length();
         while (!line.equals("")) {
-            for (int col = 0; col < line.length(); col++) {
-                char chr = line.charAt(col);
+        	input.add(line);
+            line = serverMessages.readLine();
+        }
+        Map map = new Map(input.size(), colSize);
+        State.map = map;
+        this.initialState = new State(null);
+        
+        boolean agentFound = false;
+        
+        for(int row = 0; row < input.size(); row++) {
+        	for (int col = 0; col < colSize; col++) {
+                char chr = input.get(row).charAt(col);
 
                 if (chr == '+') { // Wall.
                     State.map.walls[row][col] = true;
@@ -44,11 +54,6 @@ public class SearchClient {
                     System.exit(1);
                 }
             }
-            line = serverMessages.readLine();
-            row++;
-            
-            Map map = new Map(row, line.length());
-            State.map = map;
         }
     }
 

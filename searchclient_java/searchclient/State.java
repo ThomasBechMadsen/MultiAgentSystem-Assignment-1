@@ -7,9 +7,8 @@ import java.util.Random;
 
 public class State {
     private static final Random RNG = new Random(1);
-
-    public static int MAX_ROW = 70;
-    public static int MAX_COL = 70;
+    
+    public static Map map;
 
     public int agentRow;
     public int agentCol;
@@ -24,9 +23,7 @@ public class State {
     // this.walls[row][col] is true if there's a wall at (row, col)
     //
 
-    public boolean[][] walls = new boolean[MAX_ROW][MAX_COL];
-    public char[][] boxes = new char[MAX_ROW][MAX_COL];
-    public char[][] goals = new char[MAX_ROW][MAX_COL];
+    public char[][] boxes;
 
     public State parent;
     public Command action;
@@ -53,9 +50,9 @@ public class State {
     }
 
     public boolean isGoalState() {
-        for (int row = 1; row < MAX_ROW - 1; row++) {
-            for (int col = 1; col < MAX_COL - 1; col++) {
-                char g = goals[row][col];
+        for (int row = 1; row < map.max_row - 1; row++) {
+            for (int col = 1; col < map.max_col - 1; col++) {
+                char g = map.goals[row][col];
                 char b = Character.toLowerCase(boxes[row][col]);
                 if (g > 0 && b != g) {
                     return false;
@@ -120,7 +117,7 @@ public class State {
     }
 
     private boolean cellIsFree(int row, int col) {
-        return !this.walls[row][col] && this.boxes[row][col] == 0;
+        return !map.walls[row][col] && this.boxes[row][col] == 0;
     }
 
     private boolean boxAt(int row, int col) {
@@ -129,10 +126,8 @@ public class State {
 
     private State ChildState() {
         State copy = new State(this);
-        for (int row = 0; row < MAX_ROW; row++) {
-            System.arraycopy(this.walls[row], 0, copy.walls[row], 0, MAX_COL);
-            System.arraycopy(this.boxes[row], 0, copy.boxes[row], 0, MAX_COL);
-            System.arraycopy(this.goals[row], 0, copy.goals[row], 0, MAX_COL);
+        for (int row = 0; row < map.max_row; row++) {
+            System.arraycopy(this.boxes[row], 0, copy.boxes[row], 0, map.max_col);
         }
         return copy;
     }
@@ -156,8 +151,6 @@ public class State {
             result = prime * result + this.agentCol;
             result = prime * result + this.agentRow;
             result = prime * result + Arrays.deepHashCode(this.boxes);
-            result = prime * result + Arrays.deepHashCode(this.goals);
-            result = prime * result + Arrays.deepHashCode(this.walls);
             this._hash = result;
         }
         return this._hash;
@@ -174,26 +167,22 @@ public class State {
         State other = (State) obj;
         if (this.agentRow != other.agentRow || this.agentCol != other.agentCol)
             return false;
-        if (!Arrays.deepEquals(this.boxes, other.boxes))
-            return false;
-        if (!Arrays.deepEquals(this.goals, other.goals))
-            return false;
-        return Arrays.deepEquals(this.walls, other.walls);
+        return Arrays.deepEquals(this.boxes, other.boxes);
     }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        for (int row = 0; row < MAX_ROW; row++) {
-            if (!this.walls[row][0]) {
+        for (int row = 0; row < map.max_row; row++) {
+            if (!map.walls[row][0]) {
                 break;
             }
-            for (int col = 0; col < MAX_COL; col++) {
+            for (int col = 0; col < map.max_col; col++) {
                 if (this.boxes[row][col] > 0) {
                     s.append(this.boxes[row][col]);
-                } else if (this.goals[row][col] > 0) {
-                    s.append(this.goals[row][col]);
-                } else if (this.walls[row][col]) {
+                } else if (map.goals[row][col] > 0) {
+                    s.append(map.goals[row][col]);
+                } else if (map.walls[row][col]) {
                     s.append("+");
                 } else if (row == this.agentRow && col == this.agentCol) {
                     s.append("0");

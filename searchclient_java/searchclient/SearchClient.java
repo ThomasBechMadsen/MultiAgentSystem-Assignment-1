@@ -31,7 +31,7 @@ public class SearchClient {
         
         boolean agentFound = false;
         ArrayList<Box> boxes = new ArrayList<Box>();
-        
+        System.err.printf("Map size: (%d, %d)\n", input.size(), colSize);
         for(int row = 0; row < input.size(); row++) {
         	for (int col = 0; col < colSize; col++) {
                 char chr = input.get(row).charAt(col);
@@ -47,7 +47,7 @@ public class SearchClient {
                     this.initialState.agentRow = row;
                     this.initialState.agentCol = col;
                 } else if ('A' <= chr && chr <= 'Z') { // Box.
-                	boxes.add(new State.Box(chr, row, col));
+                	boxes.add(new State.Box(chr, col, row));
                 } else if ('a' <= chr && chr <= 'z') { // Goal.
                     State.map.goals[row][col] = chr;
                 } else if (chr == ' ') {
@@ -83,11 +83,16 @@ public class SearchClient {
             }
 
             strategy.addToExplored(leafState);
-            for (State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly; see State.java.
-                if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-                    strategy.addToFrontier(n);
+            try {
+            	for (State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly; see State.java.
+                    if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+                        strategy.addToFrontier(n);
+                    }
                 }
-            }
+			} catch (Exception e) {
+				System.err.println("Failed to expand state:\n" + leafState);
+				throw e;
+			}
             iterations++;
         }
     }

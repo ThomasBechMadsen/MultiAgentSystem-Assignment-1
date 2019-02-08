@@ -8,13 +8,13 @@ import java.util.Random;
 public class State {
 	public static class Box{
 		public char c;
-		public int x;
-		public int y;
+		public int col;
+		public int row;
 		
-		public Box(char chr, int x, int y) {
+		public Box(char chr, int col, int row) {
 			this.c = chr;
-			this.x = x;
-			this.y = y;
+			this.col = col;
+			this.row = row;
 		}
 	}
     private static final Random RNG = new Random(1);
@@ -64,7 +64,7 @@ public class State {
     	for(int i = 0; i < boxes.length; ++i)
     	{
     		Box currentBox = boxes[i];
-    		if(map.goals[currentBox.x][currentBox.y] != currentBox.c)
+    		if(map.goals[currentBox.row][currentBox.col] != Character.toLowerCase(currentBox.c))
     		{
     			return false;
     		}
@@ -100,9 +100,9 @@ public class State {
                         n.agentRow = newAgentRow;
                         n.agentCol = newAgentCol;
                         // Update the specific box instance for new state
-                        Box movedBox = n.getBox(newAgentCol, newAgentRow);
-                        movedBox.x = newBoxCol;
-                        movedBox.y = newBoxRow;
+                        Box movedBox = n.getBox(newAgentRow, newAgentCol);
+                        movedBox.col = newBoxCol;
+                        movedBox.row = newBoxRow;
                         expandedStates.add(n);
                     }
                 }
@@ -118,9 +118,9 @@ public class State {
                         n.agentRow = newAgentRow;
                         n.agentCol = newAgentCol;
                         // Update the specific box instance for new state
-                        Box movedBox = n.getBox(this.agentCol, this.agentRow);
-                        movedBox.x = boxCol;
-                        movedBox.y = boxRow;
+                        Box movedBox = n.getBox(boxRow, boxCol);
+                        movedBox.col = agentCol;
+                        movedBox.row = agentRow;
                         expandedStates.add(n);
                     }
                 }
@@ -138,8 +138,10 @@ public class State {
     {
     	for (int i = 0; i < boxes.length; i++) {
     		Box currentBox = boxes[i];
-    		if(currentBox.x == col && currentBox.y == row)
+    		if(currentBox.col == col && currentBox.row == row)
+    		{
     			return currentBox;
+    		}
 		}
     	return null;
     }

@@ -37,7 +37,7 @@ public class SearchClient {
                 char chr = input.get(row).charAt(col);
 
                 if (chr == '+') { // Wall.
-                    State.map.walls[row][col] = true;
+                    State.map.setWall(row, col);
                 } else if ('0' <= chr && chr <= '9') { // Agent.
                     if (agentFound) {
                         System.err.println("Error, not a single agent level");
@@ -49,7 +49,7 @@ public class SearchClient {
                 } else if ('A' <= chr && chr <= 'Z') { // Box.
                 	boxes.add(new State.Box(chr, col, row));
                 } else if ('a' <= chr && chr <= 'z') { // Goal.
-                    State.map.goals[row][col] = chr;
+                	State.map.setGoal(row, col, chr);
                 } else if (chr == ' ') {
                     // Free space.
                 } else {

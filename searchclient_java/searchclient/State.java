@@ -34,6 +34,9 @@ public class State {
     // this.walls[row][col] is true if there's a wall at (row, col)
     //
 
+    // List of where all the boxes in this state are located
+    // We could have it in a 2D array, but that would have 
+    // significant overhead for a limited amount of boxes. 
     public Box[] boxes;
 
     public State parent;
@@ -64,7 +67,7 @@ public class State {
     	for(int i = 0; i < boxes.length; ++i)
     	{
     		Box currentBox = boxes[i];
-    		if(map.goals[currentBox.row][currentBox.col] != Character.toLowerCase(currentBox.c))
+    		if(map.getGoal(currentBox.row, currentBox.col) != Character.toLowerCase(currentBox.c))
     		{
     			return false;
     		}
@@ -131,7 +134,7 @@ public class State {
     }
 
     private boolean cellIsFree(int row, int col) {
-        return !map.walls[row][col] && !boxAt(row, col);
+        return !map.hasWall(row, col) && !boxAt(row, col);
     }
     
     private Box getBox(int row, int col)
@@ -196,26 +199,20 @@ public class State {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        for (int row = 0; row < map.max_row; row++) {
-            if (!map.walls[row][0]) {
-                break;
-            }
-            for (int col = 0; col < map.max_col; col++) {
-                //TODO: Write boxes
-            	if (map.goals[row][col] > 0) {
-                    s.append(map.goals[row][col]);
-                } else if (map.walls[row][col]) {
-                    s.append("+");
-                } else if (row == this.agentRow && col == this.agentCol) {
-                    s.append("0");
-                } else {
-                    s.append(" ");
-                }
-            }
-            s.append("\n");
-        }
-        return s.toString();
+        // First get the "static" background map
+    	StringBuilder maprender = map.GetMapLayout();
+        
+    	// Draw agent location
+    	int agentOffset = agentRow * (map.max_col + 1) + agentCol;
+    	maprender.setCharAt(agentOffset, '0');
+    	
+    	// Draw box locations
+    	for (int i = 0; i < boxes.length; i++) {
+    		int boxOffset = boxes[i].row * (map.max_col + 1)+ boxes[i].col;
+    		maprender.setCharAt(boxOffset, boxes[i].c);
+		}
+    	
+        return maprender.toString();
     }
 
 }

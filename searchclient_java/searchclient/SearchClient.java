@@ -54,6 +54,7 @@ public class SearchClient {
                 	boxes.add(new State.Box(chr, col, row));
                 } else if ('a' <= chr && chr <= 'z') { // Goal.
                 	State.map.setGoal(row, col, chr);
+                	State.map.goals++;
                 } else if (chr == ' ') {
                     // Free space.
                 } else {
@@ -63,6 +64,7 @@ public class SearchClient {
             }
         }
         this.initialState.boxes = boxes.toArray(new Box[0]);
+        System.err.println("Goals: " + State.map.goals);
         System.err.println(initialState);
     }
 
@@ -156,8 +158,8 @@ public class SearchClient {
 
             for (State n : solution) {
                 String act = n.action.toString();
-                System.err.printf("Action: %s\n", act);
-                System.err.println(n);
+                //System.err.printf("Action: %s\n", act);
+                //System.err.println(n);
                 System.out.println(act);
                 String response = serverMessages.readLine();
                 if (response.contains("false")) {

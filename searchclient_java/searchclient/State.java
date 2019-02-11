@@ -94,15 +94,19 @@ public class State {
     }
 
     public boolean isGoalState() {
+    	int occupiedGoals = 0;
     	for(int i = 0; i < boxes.length; ++i)
     	{
     		Box currentBox = boxes[i];
-    		if(map.getGoal(currentBox.row, currentBox.col) != Character.toLowerCase(currentBox.c))
+    		if(map.getGoal(currentBox.row, currentBox.col) == Character.toLowerCase(currentBox.c))
     		{
-    			return false;
+    			occupiedGoals++;
+        		if(occupiedGoals == map.goals) {
+        			return true;
+        		}
     		}
     	}
-        return true;
+        return false;
     }
 
     public ArrayList<State> getExpandedStates() {

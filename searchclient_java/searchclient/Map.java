@@ -7,6 +7,8 @@ public class Map {
     private char[][] tile;
     private final char kWall = 0xFF;
     
+    public int goals = 0;
+    
     public Map(int rows, int cols) {
     	max_row = rows;
     	max_col = cols;
@@ -37,7 +39,6 @@ public class Map {
     	StringBuilder s = new StringBuilder();
     	for (int row = 0; row < max_row; row++) {
             for (int col = 0; col < max_col; col++) {
-                //TODO: Write boxes
             	if (getGoal(row, col) >= 'a' && getGoal(row, col) <= 'z') {
                     s.append(getGoal(row, col));
                 } else if (hasWall(row, col)) {

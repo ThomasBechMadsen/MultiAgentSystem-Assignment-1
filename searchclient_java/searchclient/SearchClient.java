@@ -24,6 +24,10 @@ public class SearchClient {
         while (!line.equals("")) {
         	input.add(line);
             line = serverMessages.readLine();
+            if(colSize < line.length())
+            {
+            	colSize = line.length();
+            }
         }
         Map map = new Map(input.size(), colSize);
         State.map = map;
@@ -33,7 +37,7 @@ public class SearchClient {
         ArrayList<Box> boxes = new ArrayList<Box>();
         System.err.printf("Map size: (%d, %d)\n", input.size(), colSize);
         for(int row = 0; row < input.size(); row++) {
-        	for (int col = 0; col < colSize; col++) {
+        	for (int col = 0; col < input.get(row).length(); col++) {
                 char chr = input.get(row).charAt(col);
 
                 if (chr == '+') { // Wall.
@@ -59,6 +63,7 @@ public class SearchClient {
             }
         }
         this.initialState.boxes = boxes.toArray(new Box[0]);
+        System.err.println(initialState);
     }
 
     public ArrayList<State> Search(Strategy strategy) {
@@ -81,7 +86,6 @@ public class SearchClient {
             if (leafState.isGoalState()) {
                 return leafState.extractPlan();
             }
-
             strategy.addToExplored(leafState);
             try {
             	for (State n : leafState.getExpandedStates()) { // The list of expanded states is shuffled randomly; see State.java.

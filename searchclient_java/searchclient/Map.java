@@ -36,9 +36,6 @@ public class Map {
     public StringBuilder GetMapLayout() {
     	StringBuilder s = new StringBuilder();
     	for (int row = 0; row < max_row; row++) {
-            if (!hasWall(row, 0)) {
-                break;
-            }
             for (int col = 0; col < max_col; col++) {
                 //TODO: Write boxes
             	if (getGoal(row, col) >= 'a' && getGoal(row, col) <= 'z') {
@@ -52,6 +49,12 @@ public class Map {
             s.append("\n");
         }
     	return s;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("Map with size [%d;%d]", max_row, max_col); 
     }
     
 }

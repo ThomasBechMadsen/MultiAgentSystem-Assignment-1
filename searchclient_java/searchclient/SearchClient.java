@@ -152,6 +152,8 @@ public class SearchClient {
 
             for (State n : solution) {
                 String act = n.action.toString();
+                System.err.printf("Action: %s\n", act);
+                System.err.println(n);
                 System.out.println(act);
                 String response = serverMessages.readLine();
                 if (response.contains("false")) {

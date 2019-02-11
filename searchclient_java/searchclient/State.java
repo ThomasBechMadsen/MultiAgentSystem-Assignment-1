@@ -16,6 +16,36 @@ public class State {
 			this.col = col;
 			this.row = row;
 		}
+		
+		@Override
+		protected Object clone() {
+			return new Box(c, col, row);
+		}
+		
+		@Override
+		public int hashCode() {
+			return (c ^ col ^ row);
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(obj == null)
+			{
+				return false;
+			}
+			else
+			{
+				Box other;
+				try {
+					other = (Box)obj;
+				} catch (Exception e) {
+					return false;
+				}
+				return other.c == c && other.col == col && other.row == row;
+			}
+		}
+		
+        
 	}
     private static final Random RNG = new Random(1);
     
@@ -156,6 +186,10 @@ public class State {
     private State ChildState() {
         State copy = new State(this);
         copy.boxes = this.boxes.clone();
+        for(int i = 0; i < this.boxes.length; ++i)
+        {
+            copy.boxes[i] = (State.Box)this.boxes[i].clone(); // Make a deep copy
+        }
         return copy;
     }
 
@@ -201,18 +235,17 @@ public class State {
     public String toString() {
         // First get the "static" background map
     	StringBuilder maprender = map.GetMapLayout();
-        
     	// Draw agent location
     	int agentOffset = agentRow * (map.max_col + 1) + agentCol;
     	maprender.setCharAt(agentOffset, '0');
     	
     	// Draw box locations
     	for (int i = 0; i < boxes.length; i++) {
-    		int boxOffset = boxes[i].row * (map.max_col + 1)+ boxes[i].col;
+    		int boxOffset = boxes[i].row * (map.max_col + 1) + boxes[i].col;
     		maprender.setCharAt(boxOffset, boxes[i].c);
 		}
     	
         return maprender.toString();
     }
-
+    
 }

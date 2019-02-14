@@ -136,43 +136,46 @@ public abstract class Strategy {
     }
 
     public static class StrategyBestFirst extends Strategy {
-        private Heuristic heuristic;
+        public Heuristic heuristic;
         private TreeSet<State> frontier;
-    	private HashSet<State> frontierSet;
+    	//private HashSet<State> frontierSet;
 
         public StrategyBestFirst(Heuristic h) {
             super();
             this.heuristic = h;
             frontier = new TreeSet<State>(heuristic);
-            frontierSet = new HashSet<State>();
+            //frontierSet = new HashSet<State>();
         }
 
         @Override
         public State getAndRemoveLeaf() {
         	State next = frontier.pollFirst();
-        	frontierSet.remove(next);
+        	//frontierSet.remove(next);
             return next;
         }
 
         @Override
         public void addToFrontier(State n) {
         	frontier.add(n);
-        	frontierSet.add(n);
+        	//frontierSet.add(n);
         }
 
         @Override
         public int countFrontier() {
-            return frontierSet.size();
+        	return frontier.size();
+            //return frontierSet.size();
         }
 
         @Override
         public boolean frontierIsEmpty() {
-            return frontierSet.isEmpty();
+        	return frontier.isEmpty();
+            //return frontierSet.isEmpty();
         }
 
         @Override
         public boolean inFrontier(State n) {
-            return frontierSet.contains(n);
+        	return frontier.contains(n);
+            //return frontierSet.contains(n);
         }
 
         @Override

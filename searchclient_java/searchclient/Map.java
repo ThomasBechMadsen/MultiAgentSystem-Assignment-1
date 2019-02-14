@@ -1,5 +1,11 @@
 package searchclient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import searchclient.State.Box;
+
 public class Map {
     public int max_row;// = 70;
     public int max_col;// = 70;
@@ -35,6 +41,18 @@ public class Map {
     	tile[row][col] = c;
     }
     
+    public Goal[] getAllGoals() {
+    	ArrayList<Goal> goals = new ArrayList<Goal>();
+    	for (int row = 0; row < max_row; row++) {
+            for (int col = 0; col < max_col; col++) {
+            	if (getGoal(row, col) >= 'a' && getGoal(row, col) <= 'z') {
+                    goals.add(new Goal(tile[row][col], col, row));
+                }
+            }
+        }
+    	return goals.toArray(new Goal[0]);
+    }
+    
     public StringBuilder GetMapLayout() {
     	StringBuilder s = new StringBuilder();
     	for (int row = 0; row < max_row; row++) {
@@ -58,4 +76,15 @@ public class Map {
         return String.format("Map with size [%d;%d]", max_row, max_col); 
     }
     
+    public static class Goal{
+		public char c;
+		public int col;
+		public int row;
+		
+		public Goal(char chr, int col, int row) {
+			this.c = chr;
+			this.col = col;
+			this.row = row;
+		} 
+    }
 }

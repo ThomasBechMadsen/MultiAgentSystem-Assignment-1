@@ -1,14 +1,55 @@
 package searchclient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
+import searchclient.Map.Goal;
+import searchclient.State.Box;
+
 public abstract class Heuristic implements Comparator<State> {
+	
+	private Goal[] goals;
+	
     public Heuristic(State initialState) {
-        // Here's a chance to pre-process the static parts of the level.
+    	goals = State.map.getAllGoals();
     }
 
     public int h(State n) {
-        throw new NotImplementedException();
+        int result = 0;
+        ArrayList<Box> boxes = new ArrayList<Box>(Arrays.asList(n.boxes));
+        
+        for(int i = 0; i < goals.length; i++) {
+        	int closestScore = -1;
+        	Box reservedBox = null;
+        	for(int j = 0; j < boxes.size(); j++) {
+        		Box box = boxes.get(j);
+        		if(goals[i].c != Character.toLowerCase(box.c)) {
+        			continue;
+        		}
+        		
+        		//Manhattan distance:
+        		int agentToBox = Math.abs(n.agentCol - box.col) + Math.abs(n.agentRow - box.row);
+        		int boxToGoal = Math.abs(goals[i].col - box.col) + Math.abs(goals[i].row - box.row);
+        		
+        		if(boxToGoal == 0) {
+        			boxes.remove(box);
+        			closestScore = 0;
+        			break;
+        		}
+        		else if(closestScore == -1 || agentToBox + boxToGoal < closestScore) {
+        			if(reservedBox != null) {
+        				boxes.add(reservedBox);
+        			}
+        			closestScore = agentToBox + boxToGoal;
+        			reservedBox = box;
+        			boxes.remove(box);
+        		}
+        	}
+        	result += closestScore;
+        }
+        //System.err.println(result);
+        return result;
     }
 
     public abstract int f(State n);

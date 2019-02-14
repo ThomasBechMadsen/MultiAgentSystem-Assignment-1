@@ -83,8 +83,8 @@ public class SearchClient {
                 return null;
             }
             State leafState = strategy.getAndRemoveLeaf();
-            System.err.println(leafState.toString());
-            System.err.println("f(): " + ((Strategy.StrategyBestFirst) strategy).heuristic.f(leafState));
+            //System.err.println(leafState.toString());
+            //System.err.println("f(): " + ((Strategy.StrategyBestFirst) strategy).heuristic.f(leafState));
 
             if (leafState.isGoalState()) {
                 return leafState.extractPlan();
@@ -96,8 +96,8 @@ public class SearchClient {
                         strategy.addToFrontier(n);
                     }
                 }
-                System.err.println("Frontier: " + ((Strategy.StrategyBestFirst) strategy).countFrontier());
-                System.err.println("Explored: " + ((Strategy.StrategyBestFirst) strategy).countExplored());
+                //System.err.println("Frontier: " + ((Strategy.StrategyBestFirst) strategy).countFrontier());
+                //System.err.println("Explored: " + ((Strategy.StrategyBestFirst) strategy).countExplored());
 			} catch (Exception e) {
 				System.err.println("Failed to expand state:\n" + leafState);
 				throw e;

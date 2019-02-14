@@ -17,14 +17,14 @@ public abstract class Heuristic implements Comparator<State> {
 
     public int h(State n) {
         int result = 0;
-        ArrayList<Box> boxes = new ArrayList<Box>(Arrays.asList(n.boxes));
+        Box[] boxes = n.boxes;
         
         for(int i = 0; i < goals.length; i++) {
         	int closestScore = -1;
         	Box reservedBox = null;
-        	for(int j = 0; j < boxes.size(); j++) {
-        		Box box = boxes.get(j);
-        		if(goals[i].c != Character.toLowerCase(box.c)) {
+        	for(int j = 0; j < boxes.length; j++) {
+        		Box box = boxes[j];
+        		if(goals[i].c != Character.toLowerCase(box.c) || boxes[j] == reservedBox) {
         			continue;
         		}
         		
@@ -33,17 +33,12 @@ public abstract class Heuristic implements Comparator<State> {
         		int boxToGoal = Math.abs(goals[i].col - box.col) + Math.abs(goals[i].row - box.row);
         		
         		if(boxToGoal == 0) {
-        			boxes.remove(box);
         			closestScore = 0;
         			break;
         		}
         		else if(closestScore == -1 || agentToBox + boxToGoal < closestScore) {
-        			if(reservedBox != null) {
-        				boxes.add(reservedBox);
-        			}
-        			closestScore = agentToBox + boxToGoal;
         			reservedBox = box;
-        			boxes.remove(box);
+        			closestScore = agentToBox + boxToGoal;
         		}
         	}
         	result += closestScore;

@@ -3,6 +3,7 @@ package searchclient;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Stack;
+import java.util.TreeSet;
 
 public abstract class Strategy {
     private HashSet<State> explored;
@@ -136,36 +137,42 @@ public abstract class Strategy {
 
     public static class StrategyBestFirst extends Strategy {
         private Heuristic heuristic;
+        private TreeSet<State> frontier;
+    	private HashSet<State> frontierSet;
 
         public StrategyBestFirst(Heuristic h) {
             super();
             this.heuristic = h;
-            throw new NotImplementedException();
+            frontier = new TreeSet<State>(heuristic);
+            frontierSet = new HashSet<State>();
         }
 
         @Override
         public State getAndRemoveLeaf() {
-            throw new NotImplementedException();
+        	State next = frontier.pollFirst();
+        	frontierSet.remove(next);
+            return next;
         }
 
         @Override
         public void addToFrontier(State n) {
-            throw new NotImplementedException();
+        	frontier.add(n);
+        	frontierSet.add(n);
         }
 
         @Override
         public int countFrontier() {
-            throw new NotImplementedException();
+            return frontierSet.size();
         }
 
         @Override
         public boolean frontierIsEmpty() {
-            throw new NotImplementedException();
+            return frontierSet.isEmpty();
         }
 
         @Override
         public boolean inFrontier(State n) {
-            throw new NotImplementedException();
+            return frontierSet.contains(n);
         }
 
         @Override

@@ -28,7 +28,7 @@ public abstract class Heuristic implements Comparator<State> {
         			continue;
         		}
         		
-        		//Manhattan distance:
+        		//Manhattan distance
         		int agentToBox = Math.abs(n.agentCol - box.col) + Math.abs(n.agentRow - box.row);
         		int boxToGoal = Math.abs(goals[i].col - box.col) + Math.abs(goals[i].row - box.row);
         		

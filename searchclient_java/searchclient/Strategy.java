@@ -1,6 +1,8 @@
 package searchclient;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -137,45 +139,47 @@ public abstract class Strategy {
 
     public static class StrategyBestFirst extends Strategy {
         public Heuristic heuristic;
-        private TreeSet<State> frontier;
-    	//private HashSet<State> frontierSet;
+        private ArrayList<State> frontier;
+    	private HashSet<State> frontierSet;
 
         public StrategyBestFirst(Heuristic h) {
             super();
             this.heuristic = h;
-            frontier = new TreeSet<State>(heuristic);
-            //frontierSet = new HashSet<State>();
+            frontier = new ArrayList<State>();
+            frontierSet = new HashSet<State>();
         }
 
         @Override
         public State getAndRemoveLeaf() {
-        	State next = frontier.pollFirst();
-        	//frontierSet.remove(next);
+        	State next = frontier.get(0);
+        	frontier.remove(0);
+        	frontierSet.remove(next);
             return next;
         }
 
         @Override
         public void addToFrontier(State n) {
         	frontier.add(n);
-        	//frontierSet.add(n);
+        	frontierSet.add(n);
+        	frontier.sort(heuristic);
         }
 
         @Override
         public int countFrontier() {
-        	return frontier.size();
-            //return frontierSet.size();
+        	//return frontier.size();
+            return frontierSet.size();
         }
 
         @Override
         public boolean frontierIsEmpty() {
-        	return frontier.isEmpty();
-            //return frontierSet.isEmpty();
+        	//return frontier.isEmpty();
+            return frontierSet.isEmpty();
         }
 
         @Override
         public boolean inFrontier(State n) {
-        	return frontier.contains(n);
-            //return frontierSet.contains(n);
+        	//return frontier.contains(n);
+            return frontierSet.contains(n);
         }
 
         @Override

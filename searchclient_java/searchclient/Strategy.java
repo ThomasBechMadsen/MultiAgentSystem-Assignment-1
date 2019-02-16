@@ -4,6 +4,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
 
@@ -139,21 +141,20 @@ public abstract class Strategy {
 
     public static class StrategyBestFirst extends Strategy {
         public Heuristic heuristic;
-        private ArrayList<State> frontier;
+        private PriorityQueue<State> frontier;
     	private HashSet<State> frontierSet;
 
         public StrategyBestFirst(Heuristic h) {
             super();
             this.heuristic = h;
-            frontier = new ArrayList<State>();
+            frontier = new PriorityQueue<State>(heuristic);
             frontierSet = new HashSet<State>();
         }
 
         @Override
         public State getAndRemoveLeaf() {
-        	State next = frontier.get(0);
+        	State next = frontier.poll();
         	frontier.remove(0);
-        	frontierSet.remove(next);
             return next;
         }
 
@@ -161,7 +162,6 @@ public abstract class Strategy {
         public void addToFrontier(State n) {
         	frontier.add(n);
         	frontierSet.add(n);
-        	frontier.sort(heuristic);
         }
 
         @Override

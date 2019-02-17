@@ -71,7 +71,7 @@ public class State {
 
     public State parent;
     public Command action;
-
+    public int cachedHeuristic = -1;
     private int g;
 
     private int _hash = 0;

@@ -16,34 +16,51 @@ public abstract class Heuristic implements Comparator<State> {
     }
 
     public int h(State n) {
-        int result = 0;
-        Box[] boxes = n.boxes;
-    	ArrayList<Box> reservedBoxes = new ArrayList<Box>();
+    	if(n.cachedHeuristic == -1)
+    	{
+    		int result = 0;
+            Box[] boxes = n.boxes;
+        	ArrayList<Box> reservedBoxes = new ArrayList<Box>();
+        	Box bestBox = null;
+            for(int i = 0; i < goals.length; i++) {
+            	int closestScore = -1;
+            	for(int j = 0; j < boxes.length; j++) {
+            		Box box = boxes[j];
+            		if(goals[i].c != Character.toLowerCase(box.c) || reservedBoxes.contains(box)) {
+            			continue;
+            		}
+            		
+            		//Manhattan distance
+            		int agentToBox = 0;
+            		int boxToGoal = Math.abs(goals[i].col - box.col) + Math.abs(goals[i].row - box.row);
+            		
+            		if(boxToGoal == 0) {
+            			closestScore = 0;
+            			bestBox = box;
+            			break;
+            		}
+            		else if(closestScore == -1 || agentToBox + boxToGoal < closestScore) {
+            			bestBox = box;
+            			closestScore = agentToBox + boxToGoal;
+            		}
+            	}
+            	reservedBoxes.add(bestBox);
+            	result += closestScore;
+            }
+            
+            int closestBoxDistance = Integer.MAX_VALUE;
+            for (Box box : reservedBoxes) {
+            	int currentDistance = Math.abs(n.agentCol - box.col) + Math.abs(n.agentRow - box.row);
+            	if(currentDistance < closestBoxDistance)
+            	{
+            		closestBoxDistance = currentDistance;
+            	}
+			}
+            
+            n.cachedHeuristic = result + closestBoxDistance;
+    	}
         
-        for(int i = 0; i < goals.length; i++) {
-        	int closestScore = -1;
-        	for(int j = 0; j < boxes.length; j++) {
-        		Box box = boxes[j];
-        		if(goals[i].c != Character.toLowerCase(box.c) || reservedBoxes.contains(box)) {
-        			continue;
-        		}
-        		
-        		//Manhattan distance
-        		int agentToBox = Math.abs(n.agentCol - box.col) + Math.abs(n.agentRow - box.row);
-        		int boxToGoal = Math.abs(goals[i].col - box.col) + Math.abs(goals[i].row - box.row);
-        		
-        		if(boxToGoal == 0) {
-        			closestScore = 0;
-        			break;
-        		}
-        		else if(closestScore == -1 || agentToBox + boxToGoal < closestScore) {
-        			reservedBoxes.add(box);
-        			closestScore = agentToBox + boxToGoal;
-        		}
-        	}
-        	result += closestScore;
-        }
-        return result;
+    	return n.cachedHeuristic;
     }
 
     public abstract int f(State n);

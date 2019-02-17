@@ -23,7 +23,7 @@ public abstract class Heuristic implements Comparator<State> {
         	ArrayList<Box> reservedBoxes = new ArrayList<Box>();
         	Box bestBox = null;
             for(int i = 0; i < goals.length; i++) {
-            	int closestScore = -1;
+            	int closestScore = Integer.MAX_VALUE;
             	for(int j = 0; j < boxes.length; j++) {
             		Box box = boxes[j];
             		if(goals[i].c != Character.toLowerCase(box.c) || reservedBoxes.contains(box)) {
@@ -31,7 +31,6 @@ public abstract class Heuristic implements Comparator<State> {
             		}
             		
             		//Manhattan distance
-            		int agentToBox = 0;
             		int boxToGoal = Math.abs(goals[i].col - box.col) + Math.abs(goals[i].row - box.row);
             		
             		if(boxToGoal == 0) {
@@ -39,9 +38,9 @@ public abstract class Heuristic implements Comparator<State> {
             			bestBox = box;
             			break;
             		}
-            		else if(closestScore == -1 || agentToBox + boxToGoal < closestScore) {
+            		else if(boxToGoal < closestScore) {
             			bestBox = box;
-            			closestScore = agentToBox + boxToGoal;
+            			closestScore = boxToGoal;
             		}
             	}
             	reservedBoxes.add(bestBox);
